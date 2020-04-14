@@ -2,11 +2,24 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\API\BreweriesApiClient;
 use App\Http\Controllers\Controller;
+use App\Models\Brewery;
 use Illuminate\Http\Request;
 
 class BreweriesController extends Controller
 {
+
+    /**
+     * @var BreweriesApiClient
+     */
+    private $apiClient;
+
+    public function __construct(BreweriesApiClient $apiClient)
+    {
+        $this->apiClient = $apiClient;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +27,12 @@ class BreweriesController extends Controller
      */
     public function index()
     {
+        $data = $this->apiClient->sendRequest('GET', 'breweries');
+        $data = array_map(function ($element){
+           return Brewery::hydrate($element);
+        }, $data['body']);
 
+        return response()->json($data);
     }
 
     /**
