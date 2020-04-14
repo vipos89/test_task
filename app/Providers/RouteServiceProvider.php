@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Helpers\API\BreweriesApiClient;
+use App\Models\Brewery;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -30,7 +32,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        \Route::bind('brewery', function($value) {
+            return Brewery::findByApi(new BreweriesApiClient(), $value);;
+        });
 
         parent::boot();
     }
